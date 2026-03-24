@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Танец как способ самовыражения - Главная</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Manrope:wght@200;300;400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-main: #e0e0e0;
+            --accent: #d4c5b0;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9000;
+            opacity: 0.05;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1rem 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(26,26,26,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 197, 176, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-line {
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            background: rgba(212, 197, 176, 0.1);
+            padding: 0.4rem 0.6rem;
+            border-radius: 50px;
+            border: 1px solid rgba(212, 197, 176, 0.2);
+        }
+
+        .nav-menu a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            padding: 0.7rem 1.3rem;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--bg-color);
+            background: var(--accent);
+        }
+
+        .header-subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 300;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 10px;
+            z-index: 1002;
+            position: relative;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 2px;
+            background: var(--accent);
+            transition: all 0.3s;
+            display: block;
+        }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .hero-title-section {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15vh 5vw 5vh;
+            position: relative;
+            width: 100%;
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1.1;
+            text-transform: uppercase;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        .hero-title .word {
+            display: inline-block;
+            overflow: hidden;
+            margin: 0 5px;
+        }
+
+        .hero-title .word span {
+            display: block;
+            transform: translateY(100%);
+        }
+
+        .hero-title .outline {
+            -webkit-text-stroke: 1px var(--accent);
+            color: transparent;
+            position: relative;
+        }
+
+        .hero-title .outline::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            color: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .hero-title .outline:hover::after {
+            opacity: 1;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+        }
+
+        .section {
+            padding: 8vh 5vw;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            align-items: center;
+        }
+
+        .text-block {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.3s, background 0.3s;
+            width: 100%;
+        }
+
+        .text-block:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(10px);
+        }
+
+        .text-block p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .text-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .text-block p:first-of-type {
+            font-size: 1.3rem;
+            color: var(--white);
+        }
+
+        .image-wrapper {
+            width: 100%;
+            height: 50vh;
+            min-height: 300px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+        }
+
+        .image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 197, 176, 0.1), rgba(212, 197, 176, 0.05));
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .image-wrapper:hover::before {
+            opacity: 1;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.3);
+            filter: grayscale(100%);
+            transition: filter 0.4s, transform 0.6s;
+        }
+
+        .image-wrapper:hover img {
+            filter: grayscale(0%);
+            transform: scale(1);
+        }
+
+        .marquee {
+            padding: 3vh 0;
+            background: var(--accent);
+            color: var(--bg-color);
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            width: 100%;
+        }
+
+        .marquee::before,
+        .marquee::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 150px;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .marquee::before {
+            left: 0;
+            background: linear-gradient(to right, var(--accent), transparent);
+        }
+
+        .marquee::after {
+            right: 0;
+            background: linear-gradient(to left, var(--accent), transparent);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-style: italic;
+            animation: marquee 20s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .features-section {
+            min-height: auto;
+            padding: 5vh 5vw 10vh;
+            width: 100%;
+        }
+
+        .features-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            margin-bottom: 1rem;
+            color: var(--white);
+            letter-spacing: 0.2em;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 100%;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem;
+            width: 100%;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(212, 197, 176, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            opacity: 1;
+            visibility: visible;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 197, 176, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            margin-bottom: 1.2rem;
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 1.5;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            color: var(--white);
+            margin-bottom: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .split-layout {
+                gap: 3vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 12vw; }
+            .split-layout { 
+                grid-template-columns: 1fr; 
+                align-items: start;
+                gap: 2rem;
+            }
+            .text-block {
+                padding: 1.5rem;
+                border-left: none;
+                border-top: 2px solid var(--accent);
+                border-radius: 0 0 8px 8px;
+                background: rgba(255, 255, 255, 0.02);
+                order: 2;
+            }
+            .image-wrapper { 
+                height: 35vh;
+                min-height: 250px;
+                order: 1;
+            }
+            .text-block p {
+                font-size: 1rem;
+                text-align: left;
+            }
+            .text-block p:first-of-type {
+                font-size: 1.15rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                background: rgba(26,26,26,0.98);
+                padding: 2rem;
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid rgba(212, 197, 176, 0.2);
+                transform: translateY(-150%);
+                transition: transform 0.3s;
+                z-index: 999;
+                opacity: 0;
+                visibility: hidden;
+            }
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            .nav-menu a {
+                width: 100%;
+                text-align: center;
+                padding: 1rem;
+            }
+            .mobile-menu-btn {
+                display: flex;
+            }
+            .header-subtitle {
+                display: none;
+            }
+            .marquee-content { font-size: 2.5rem; }
+            .section {
+                padding: 4vh 5vw;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .feature-card {
+                padding: 1.5rem;
+            }
+            .feature-icon {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="noise"></div>
+
+    <header class="header" id="header">
+        <div class="logo-container">
+            <div class="logo-line" id="logoLine"></div>
+            <div class="logo">DANCE <span>ART</span></div>
+        </div>
+        <nav class="nav-menu" id="navMenu">
+            <a href="index.html" class="active">Главная</a>
+            <a href="directions.html">Направления</a>
+            <a href="statistics.html">Статистика</a>
+        </nav>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="header-subtitle">Project 2026</div>
+    </header>
+
+    <section class="hero-title-section">
+        <h1 class="hero-title">
+            <span class="word"><span>Танец</span></span>
+            <span class="word"><span>как</span></span>
+            <span class="word"><span>способ</span></span>
+            <span class="word"><span class="outline" data-text="Самовыражения">Самовыражения</span></span>
+        </h1>
+    </section>
+
+    <div class="marquee">
+        <div class="marquee-content">
+            ЭМОЦИИ • РИТМ • СВОБОДА • ВЫРАЖЕНИЕ • ЭНЕРГИЯ • СТРАСТЬ •
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="split-layout">
+            <div class="text-block reveal-text">
+                <p>
+                    Танец — это вид искусства, в котором художественные образы создаются средствами пластических, ритмичных движений и поз человеческого тела, обычно под музыку. Это универсальный язык самовыражения, способный передавать эмоции, сюжеты и идеи, сочетая в себе грацию, физическую активность, дисциплину и эстетическое удовольствие.
+                </p>
+                <p>
+                    Танец — это мощный инструмент самовыражения, позволяющий транслировать чувства, мысли и внутренний мир через движения тела, минуя слова. Он освобождает от стресса, повышает самооценку и помогает лучше понять себя.
+                </p>
+            </div>
+            <div class="image-wrapper reveal-img">
+                <img src="1.jpg" onerror="this.src='https://images.unsplash.com/photo-1535525153412-5a424242ed27?q=80&w=2070&auto=format&fit=crop'" alt="Танец">
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="split-layout">
+            <div class="image-wrapper reveal-img">
+                <img src="2.jpg" onerror="this.src='https://images.unsplash.com/photo-1516541196182-6bdb0516ed27?q=80&w=2070&auto=format&fit=crop'" alt="Эмоции">
+            </div>
+            <div class="text-block reveal-text">
+                <p>
+                    Для многих людей танец становится способом выразить свои эмоции, которые трудно передать словами. В каждом движении тела скрыта сила, которая помогает улучшить физическое состояние, достичь гармонии с собой.
+                </p>
+                <p>
+                    Танцевать – значит говорить телом, рассказывать истории без слов. В каждом движении заключена сила, которая может раскрыть глубинные аспекты человеческой личности.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="split-layout">
+            <div class="text-block reveal-text">
+                <p>
+                    Танцевать вместе – значит быть частью сообщества, где каждый вносит свой уникальный вклад. Это создает особую атмосферу взаимопонимания и поддержки, которая способствует формированию крепких социальных связей.
+                </p>
+                <p>
+                    В процессе совместных танцевальных практик люди учатся работать в команде, слушать и слышать друг друга. Такое взаимодействие способствует развитию эмпатии, уважения к личному пространству другого.
+                </p>
+                <p>
+                    Танец, как форма искусства, отражает культурные традиции и историю народов, становясь своего рода языком, который понятен без слов в любой точке мира.
+                </p>
+            </div>
+            <div class="image-wrapper reveal-img">
+                <img src="3.jpg" onerror="this.src='https://images.unsplash.com/photo-1518834107812-67b0b7c58434?q=80&w=2070&auto=format&fit=crop'" alt="Сообщество">
+            </div>
+        </div>
+    </section>
+
+    <section class="section features-section">
+        <div class="features-container">
+            <h2 class="section-title reveal-text">Почему танец важен?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <h3>Эмоции</h3>
+                    <p>Выражение чувств через движение, освобождение от стресса и эмоциональная разрядка</p>
+                </div>
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/>
+                        <path d="M8 14c.55 0 1 .45 1 1v4c0 .55-.45 1-1 1s-1-.45-1-1v-4c0-.55.45-1 1-1zm8 0c.55 0 1 .45 1 1v4c0 .55-.45 1-1 1s-1-.45-1-1v-4c0-.55.45-1 1-1z"/>
+                    </svg>
+                    <h3>Самовыражение</h3>
+                    <p>Язык тела, который рассказывает истории без слов и раскрывает личность</p>
+                </div>
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                    <h3>Сообщество</h3>
+                    <p>Часть команды, взаимопонимание, поддержка и крепкие социальные связи</p>
+                </div>
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22 14.86 20.57 16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/>
+                    </svg>
+                    <h3>Здоровье</h3>
+                    <p>Физическая активность, грация, дисциплина и улучшение состояния тела</p>
+                </div>
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                    <h3>Культура</h3>
+                    <p>Отражение традиций и истории народов, универсальный международный язык</p>
+                </div>
+                <div class="feature-card">
+                    <svg class="feature-icon" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                    <h3>Гармония</h3>
+                    <p>Достижение внутреннего баланса, повышение самооценки и понимание себя</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            
+            tl.to(".header", {
+                opacity: 1,
+                duration: 0.25
+            })
+            .to(".logo-line", {
+                scaleX: 1,
+                duration: 0.25
+            }, "-=0.2")
+            .to(".hero-title .word span", {
+                y: 0,
+                duration: 0.4,
+                stagger: 0.05,
+                ease: "power4.out"
+            }, "-=0.15");
+        });
+
+        gsap.registerPlugin(ScrollTrigger);
+
+        document.querySelectorAll('.reveal-text').forEach(block => {
+            gsap.fromTo(block, 
+                { y: 30, opacity: 0 },
+                {
+                    scrollTrigger: {
+                        trigger: block,
+                        start: "top 85%",
+                        toggleActions: "play none none none"
+                    },
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.4,
+                    ease: "power3.out"
+                }
+            );
+        });
+
+        document.querySelectorAll('.reveal-img').forEach(wrapper => {
+            gsap.to(wrapper.querySelector('img'), {
+                scrollTrigger: {
+                    trigger: wrapper,
+                    start: "top 85%",
+                    end: "bottom 60%",
+                    scrub: 0.5
+                },
+                scale: 1,
+                y: 0,
+                duration: 1
+            });
+        });
+
+        gsap.fromTo(".feature-card",
+            { y: 40, opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: ".features-grid",
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.4,
+                stagger: 0.05,
+                ease: "power3.out"
+            }
+        );
+    </script>
+</body>
+</html>
