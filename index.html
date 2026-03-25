@@ -585,17 +585,17 @@
     </section>
 
     <script>
-        /* Скрипт для мобильного меню из видеоурока */
+
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navMenu = document.getElementById('navMenu');
 
-        // Функция переключения меню
+
         mobileMenuBtn.addEventListener('click', function() {
             mobileMenuBtn.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
 
-        // Закрытие меню при клике на ссылку
+
         const navLinks = document.querySelectorAll('.nav-menu a');
         for (let i = 0; i < navLinks.length; i++) {
             navLinks[i].addEventListener('click', function() {
