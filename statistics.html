@@ -603,17 +603,17 @@
     </div>
 
     <script>
-        /* Скрипт для мобильного меню из видеоурока */
+
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const navMenu = document.getElementById('navMenu');
 
-        // Функция переключения меню по клику на бургер
+
         mobileMenuBtn.addEventListener('click', function() {
             mobileMenuBtn.classList.toggle('active');
             navMenu.classList.toggle('active');
         });
 
-        // Закрытие мобильного меню при клике на любой пункт навигации
+
         const navLinks = document.querySelectorAll('.nav-menu a');
         for (let i = 0; i < navLinks.length; i++) {
             navLinks[i].addEventListener('click', function() {
